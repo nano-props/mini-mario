@@ -9,7 +9,7 @@ public final class MarioGame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Mini Mario");
+            var frame = new JFrame("Mini Mario");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setContentPane(new GamePanel());
             frame.pack();

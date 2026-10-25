@@ -1,16 +1,13 @@
 package mini.mario;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -225,7 +222,7 @@ final class GamePanel extends JPanel {
     }
 
     private void updatePlayer() {
-        double target = (this.right ? 4.5 : 0) - (this.left ? 4.5 : 0);
+        var target = (this.right ? 4.5 : 0) - (this.left ? 4.5 : 0);
         this.velocityX += (target - this.velocityX) * (this.onGround ? 0.24 : 0.15);
         if (Math.abs(this.velocityX) < 0.08) this.velocityX = 0;
         if (this.velocityX != 0) this.facingRight = this.velocityX > 0;
@@ -247,10 +244,10 @@ final class GamePanel extends JPanel {
     }
 
     private void resolveHorizontal() {
-        int firstRow = Math.max(0, (int) Math.floor(this.playerY / TILE));
-        int lastRow = Math.min(ROWS - 1, (int) Math.floor((this.playerY + PLAYER_H - 1) / TILE));
-        int firstCol = Math.max(0, (int) Math.floor(this.playerX / TILE));
-        int lastCol = Math.min(COLS - 1, (int) Math.floor((this.playerX + PLAYER_W - 1) / TILE));
+        var firstRow = Math.max(0, (int) Math.floor(this.playerY / TILE));
+        var lastRow = Math.min(ROWS - 1, (int) Math.floor((this.playerY + PLAYER_H - 1) / TILE));
+        var firstCol = Math.max(0, (int) Math.floor(this.playerX / TILE));
+        var lastCol = Math.min(COLS - 1, (int) Math.floor((this.playerX + PLAYER_W - 1) / TILE));
         for (int row = firstRow; row <= lastRow; row++) {
             for (int col = firstCol; col <= lastCol; col++) {
                 if (this.tiles[row][col] == EMPTY) continue;
@@ -266,10 +263,10 @@ final class GamePanel extends JPanel {
     }
 
     private void resolveVertical() {
-        int firstRow = Math.max(0, (int) Math.floor(this.playerY / TILE));
-        int lastRow = Math.min(ROWS - 1, (int) Math.floor((this.playerY + PLAYER_H - 1) / TILE));
-        int firstCol = Math.max(0, (int) Math.floor(this.playerX / TILE));
-        int lastCol = Math.min(COLS - 1, (int) Math.floor((this.playerX + PLAYER_W - 1) / TILE));
+        var firstRow = Math.max(0, (int) Math.floor(this.playerY / TILE));
+        var lastRow = Math.min(ROWS - 1, (int) Math.floor((this.playerY + PLAYER_H - 1) / TILE));
+        var firstCol = Math.max(0, (int) Math.floor(this.playerX / TILE));
+        var lastCol = Math.min(COLS - 1, (int) Math.floor((this.playerX + PLAYER_W - 1) / TILE));
         for (int row = firstRow; row <= lastRow; row++) {
             for (int col = firstCol; col <= lastCol; col++) {
                 if (this.tiles[row][col] == EMPTY) continue;
@@ -299,9 +296,9 @@ final class GamePanel extends JPanel {
     }
 
     private void updateCoins() {
-        Iterator<Coin> iterator = this.coins.iterator();
+        var iterator = this.coins.iterator();
         while (iterator.hasNext()) {
-            Coin coin = iterator.next();
+            var coin = iterator.next();
             if (this.playerX < coin.x + 12 && this.playerX + PLAYER_W > coin.x - 12
                     && this.playerY < coin.y + 14 && this.playerY + PLAYER_H > coin.y - 14) {
                 iterator.remove();
@@ -313,7 +310,7 @@ final class GamePanel extends JPanel {
     }
 
     private void updateEnemies() {
-        for (Enemy enemy : this.enemies) {
+        for (var enemy : this.enemies) {
             if (!enemy.alive) continue;
             enemy.x += enemy.speed;
             if (enemy.x < enemy.min || enemy.x > enemy.max) {
@@ -352,14 +349,14 @@ final class GamePanel extends JPanel {
 
     private void burst(double x, double y, Color color) {
         for (int i = 0; i < 8; i++) {
-            double angle = i * Math.PI / 4;
+            var angle = i * Math.PI / 4;
             this.sparks.add(new Spark(x, y, Math.cos(angle) * 3, Math.sin(angle) * 3 - 2, color));
         }
     }
 
     private void updateSparks() {
         this.sparks.removeIf(spark -> --spark.life <= 0);
-        for (Spark spark : this.sparks) {
+        for (var spark : this.sparks) {
             spark.x += spark.vx;
             spark.y += spark.vy;
             spark.vy += 0.25;
@@ -372,7 +369,7 @@ final class GamePanel extends JPanel {
 
     @Override protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        Graphics2D g = (Graphics2D) graphics.create();
+        var g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         drawBackground(g);
         g.translate(-Math.round(this.cameraX), 0);
@@ -389,11 +386,11 @@ final class GamePanel extends JPanel {
         g.setColor(new Color(255, 250, 205));
         g.fillOval(720, 80, 84, 84);
         for (int i = -1; i < 8; i++) {
-            int x = (int) (i * 280 - this.cameraX * 0.22 % 280);
+            var x = (int) (i * 280 - this.cameraX * 0.22 % 280);
             drawCloud(g, x + 35, 100 + (i % 3) * 44);
         }
         for (int i = -1; i < 9; i++) {
-            int x = (int) (i * 230 - this.cameraX * 0.38 % 230);
+            var x = (int) (i * 230 - this.cameraX * 0.38 % 230);
             g.setColor(new Color(98, 204, 143));
             g.fillOval(x, 355, 240, 230);
             g.setColor(new Color(77, 184, 129));
@@ -414,17 +411,17 @@ final class GamePanel extends JPanel {
     }
 
     private void drawWorld(Graphics2D g) {
-        int first = Math.max(0, (int) this.cameraX / TILE - 1);
-        int last = Math.min(COLS - 1, (int) (this.cameraX + WIDTH) / TILE + 1);
+        var first = Math.max(0, (int) this.cameraX / TILE - 1);
+        var last = Math.min(COLS - 1, (int) (this.cameraX + WIDTH) / TILE + 1);
         for (int row = 0; row < ROWS; row++) {
             for (int col = first; col <= last; col++) {
                 if (this.tiles[row][col] != EMPTY) drawTile(g, row, col);
             }
         }
-        for (Coin coin : this.coins) {
+        for (var coin : this.coins) {
             if (coin.x < this.cameraX - 20 || coin.x > this.cameraX + WIDTH + 20) continue;
-            int x = (int) coin.x;
-            int y = (int) coin.y + (int) (Math.sin(this.ticks * 0.11 + coin.x) * 3);
+            var x = (int) coin.x;
+            var y = (int) coin.y + (int) (Math.sin(this.ticks * 0.11 + coin.x) * 3);
             g.setColor(new Color(172, 107, 27));
             g.fillOval(x - 11, y - 15, 22, 30);
             g.setColor(new Color(255, 214, 53));
@@ -433,18 +430,18 @@ final class GamePanel extends JPanel {
             g.fillRect(x - 4, y - 9, 4, 13);
         }
         drawFlag(g);
-        for (Enemy enemy : this.enemies) if (enemy.alive) drawEnemy(g, enemy);
+        for (var enemy : this.enemies) if (enemy.alive) drawEnemy(g, enemy);
         if (this.invincibleTicks == 0 || this.ticks % 8 < 4) drawPlayer(g);
-        for (Spark spark : this.sparks) {
+        for (var spark : this.sparks) {
             g.setColor(spark.color);
             g.fillRect((int) spark.x, (int) spark.y, 5, 5);
         }
     }
 
     private void drawTile(Graphics2D g, int row, int col) {
-        int x = col * TILE;
-        int y = row * TILE;
-        int tile = this.tiles[row][col];
+        var x = col * TILE;
+        var y = row * TILE;
+        var tile = this.tiles[row][col];
         if (tile == GROUND) {
             g.setColor(new Color(163, 89, 50));
             g.fillRect(x, y, TILE, TILE);
@@ -500,7 +497,7 @@ final class GamePanel extends JPanel {
     }
 
     private void drawFlag(Graphics2D g) {
-        int x = (COLS - 3) * TILE + 20;
+        var x = (COLS - 3) * TILE + 20;
         g.setColor(new Color(234, 240, 232));
         g.fillRect(x, 143, 7, GROUND_Y - 143);
         g.setColor(new Color(230, 194, 50));
@@ -514,8 +511,8 @@ final class GamePanel extends JPanel {
     }
 
     private void drawPlayer(Graphics2D g) {
-        int x = (int) Math.round(this.playerX);
-        int y = (int) Math.round(this.playerY);
+        var x = (int) Math.round(this.playerX);
+        var y = (int) Math.round(this.playerY);
         g.setColor(INK);
         g.fillRect(x + 6, y + 7, 22, 34);
         g.setColor(new Color(222, 55, 53));
@@ -543,8 +540,8 @@ final class GamePanel extends JPanel {
     }
 
     private void drawEnemy(Graphics2D g, Enemy enemy) {
-        int x = (int) enemy.x;
-        int y = (int) enemy.y;
+        var x = (int) enemy.x;
+        var y = (int) enemy.y;
         g.setColor(new Color(111, 58, 49));
         g.fillOval(x, y + 5, 32, 25);
         g.setColor(new Color(174, 104, 63));
@@ -575,36 +572,30 @@ final class GamePanel extends JPanel {
     private void drawOverlay(Graphics2D g) {
         g.setColor(new Color(16, 31, 52, 185));
         g.fillRect(0, 0, WIDTH, HEIGHT);
-        String title;
-        String subtitle;
-        if (this.state == State.TITLE) {
-            title = "MINI MARIO";
-            subtitle = "收集金币，踩掉敌人，冲向旗帜！";
-        } else if (this.state == State.PAUSED) {
-            title = "已暂停";
-            subtitle = "按 P 继续游戏";
-        } else if (this.state == State.WON) {
-            title = "过关成功！";
-            subtitle = "最终得分  " + this.score;
-        } else {
-            title = "游戏结束";
-            subtitle = "最终得分  " + this.score;
-        }
+        var overlay = switch (this.state) {
+            case TITLE -> new OverlayText("MINI MARIO", "收集金币，踩掉敌人，冲向旗帜！");
+            case PAUSED -> new OverlayText("已暂停", "按 P 继续游戏");
+            case WON -> new OverlayText("过关成功！", "最终得分  " + this.score);
+            case GAME_OVER -> new OverlayText("游戏结束", "最终得分  " + this.score);
+            case PLAYING -> throw new IllegalStateException("No overlay while playing");
+        };
         g.setFont(TITLE_FONT);
-        drawCentered(g, title, 236, new Color(255, 225, 90));
+        drawCentered(g, overlay.title(), 236, new Color(255, 225, 90));
         g.setFont(BODY_FONT);
-        drawCentered(g, subtitle, 291, Color.WHITE);
-        String hint = this.state == State.PAUSED ? "方向键 / A D 移动     空格跳跃"
+        drawCentered(g, overlay.subtitle(), 291, Color.WHITE);
+        var hint = this.state == State.PAUSED ? "方向键 / A D 移动     空格跳跃"
                 : "按空格开始     方向键 / A D 移动     空格跳跃";
         drawCentered(g, hint, 345, new Color(220, 239, 255));
         if (this.state != State.TITLE) drawCentered(g, "R 重新开始", 382, new Color(220, 239, 255));
     }
 
     private void drawCentered(Graphics2D g, String value, int y, Color color) {
-        FontMetrics metrics = g.getFontMetrics();
+        var metrics = g.getFontMetrics();
         g.setColor(color);
         g.drawString(value, (WIDTH - metrics.stringWidth(value)) / 2, y);
     }
+
+    private record OverlayText(String title, String subtitle) { }
 
     private static final class Coin {
         final double x;
