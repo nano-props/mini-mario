@@ -71,33 +71,33 @@ final class GamePanel extends JPanel {
         setDoubleBuffered(true);
         bindKeys();
         resetGame();
-        state = State.TITLE;
-        timer = new Timer(16, e -> tick());
-        timer.start();
+        this.state = State.TITLE;
+        this.timer = new Timer(16, e -> tick());
+        this.timer.start();
     }
 
     private void bindKeys() {
-        bind("pressed LEFT", "leftDown", () -> left = true);
-        bind("released LEFT", "leftUp", () -> left = false);
-        bind("pressed A", "aDown", () -> left = true);
-        bind("released A", "aUp", () -> left = false);
-        bind("pressed RIGHT", "rightDown", () -> right = true);
-        bind("released RIGHT", "rightUp", () -> right = false);
-        bind("pressed D", "dDown", () -> right = true);
-        bind("released D", "dUp", () -> right = false);
+        bind("pressed LEFT", "leftDown", () -> this.left = true);
+        bind("released LEFT", "leftUp", () -> this.left = false);
+        bind("pressed A", "aDown", () -> this.left = true);
+        bind("released A", "aUp", () -> this.left = false);
+        bind("pressed RIGHT", "rightDown", () -> this.right = true);
+        bind("released RIGHT", "rightUp", () -> this.right = false);
+        bind("pressed D", "dDown", () -> this.right = true);
+        bind("released D", "dUp", () -> this.right = false);
         bind("pressed SPACE", "spaceDown", this::pressJump);
-        bind("released SPACE", "spaceUp", () -> jumpHeld = false);
+        bind("released SPACE", "spaceUp", () -> this.jumpHeld = false);
         bind("pressed UP", "upDown", this::pressJump);
-        bind("released UP", "upUp", () -> jumpHeld = false);
+        bind("released UP", "upUp", () -> this.jumpHeld = false);
         bind("pressed W", "wDown", this::pressJump);
-        bind("released W", "wUp", () -> jumpHeld = false);
+        bind("released W", "wUp", () -> this.jumpHeld = false);
         bind("pressed P", "pause", () -> {
-            if (state == State.PLAYING) state = State.PAUSED;
-            else if (state == State.PAUSED) state = State.PLAYING;
+            if (this.state == State.PLAYING) this.state = State.PAUSED;
+            else if (this.state == State.PAUSED) this.state = State.PLAYING;
         });
         bind("pressed R", "restart", () -> {
             resetGame();
-            state = State.PLAYING;
+            this.state = State.PLAYING;
         });
     }
 
@@ -109,47 +109,47 @@ final class GamePanel extends JPanel {
     }
 
     private void pressJump() {
-        if (state == State.TITLE || state == State.WON || state == State.GAME_OVER) {
+        if (this.state == State.TITLE || this.state == State.WON || this.state == State.GAME_OVER) {
             resetGame();
-            state = State.PLAYING;
-        } else if (state == State.PLAYING && !jumpHeld) {
-            jumpQueued = true;
+            this.state = State.PLAYING;
+        } else if (this.state == State.PLAYING && !this.jumpHeld) {
+            this.jumpQueued = true;
         }
-        jumpHeld = true;
+        this.jumpHeld = true;
     }
 
     private void resetGame() {
         for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLS; col++) tiles[row][col] = EMPTY;
+            for (int col = 0; col < COLS; col++) this.tiles[row][col] = EMPTY;
         }
-        coins.clear();
-        enemies.clear();
-        sparks.clear();
+        this.coins.clear();
+        this.enemies.clear();
+        this.sparks.clear();
         buildLevel();
-        playerX = 2 * TILE;
-        playerY = GROUND_Y - PLAYER_H;
-        velocityX = 0;
-        velocityY = 0;
-        cameraX = 0;
-        left = false;
-        right = false;
-        jumpHeld = false;
-        jumpQueued = false;
-        onGround = true;
-        facingRight = true;
-        score = 0;
-        coinCount = 0;
-        lives = 3;
-        timeLeft = 300;
-        ticks = 0;
-        invincibleTicks = 0;
+        this.playerX = 2 * TILE;
+        this.playerY = GROUND_Y - PLAYER_H;
+        this.velocityX = 0;
+        this.velocityY = 0;
+        this.cameraX = 0;
+        this.left = false;
+        this.right = false;
+        this.jumpHeld = false;
+        this.jumpQueued = false;
+        this.onGround = true;
+        this.facingRight = true;
+        this.score = 0;
+        this.coinCount = 0;
+        this.lives = 3;
+        this.timeLeft = 300;
+        this.ticks = 0;
+        this.invincibleTicks = 0;
     }
 
     private void buildLevel() {
         for (int col = 0; col < COLS; col++) {
             if (inRange(col, 26, 28) || inRange(col, 52, 54) || inRange(col, 78, 80)) continue;
-            tiles[10][col] = GROUND;
-            tiles[11][col] = GROUND;
+            this.tiles[10][col] = GROUND;
+            this.tiles[11][col] = GROUND;
         }
         blocks(7, 8, BRICK, QUESTION, BRICK, QUESTION, BRICK);
         blocks(7, 22, BRICK, QUESTION, BRICK);
@@ -189,97 +189,97 @@ final class GamePanel extends JPanel {
     }
 
     private void blocks(int row, int col, int... kinds) {
-        for (int i = 0; i < kinds.length; i++) tiles[row][col + i] = kinds[i];
+        for (int i = 0; i < kinds.length; i++) this.tiles[row][col + i] = kinds[i];
     }
 
     private void pipe(int col, int height) {
         for (int row = 10 - height; row < 10; row++) {
-            tiles[row][col] = PIPE;
-            tiles[row][col + 1] = PIPE;
+            this.tiles[row][col] = PIPE;
+            this.tiles[row][col + 1] = PIPE;
         }
     }
 
     private void coinLine(int col, int row, int count) {
-        for (int i = 0; i < count; i++) coins.add(new Coin((col + i) * TILE + TILE / 2.0, row * TILE + 10));
+        for (int i = 0; i < count; i++) this.coins.add(new Coin((col + i) * TILE + TILE / 2.0, row * TILE + 10));
     }
 
     private void enemy(int col, int minCol, int maxCol) {
-        enemies.add(new Enemy(col * TILE + 8, minCol * TILE, maxCol * TILE + 10));
+        this.enemies.add(new Enemy(col * TILE + 8, minCol * TILE, maxCol * TILE + 10));
     }
 
     private void tick() {
-        ticks++;
-        if (state == State.PLAYING) {
-            if (ticks % 62 == 0 && --timeLeft <= 0) loseLife();
-            if (state == State.PLAYING) {
+        this.ticks++;
+        if (this.state == State.PLAYING) {
+            if (this.ticks % 62 == 0 && --this.timeLeft <= 0) loseLife();
+            if (this.state == State.PLAYING) {
                 updatePlayer();
                 updateCoins();
                 updateEnemies();
                 updateSparks();
-                if (invincibleTicks > 0) invincibleTicks--;
-                cameraX = clamp(playerX - WIDTH * 0.37, 0, COLS * TILE - WIDTH);
-                if (playerX + PLAYER_W >= (COLS - 3) * TILE) state = State.WON;
+                if (this.invincibleTicks > 0) this.invincibleTicks--;
+                this.cameraX = clamp(this.playerX - WIDTH * 0.37, 0, COLS * TILE - WIDTH);
+                if (this.playerX + PLAYER_W >= (COLS - 3) * TILE) this.state = State.WON;
             }
         }
         repaint();
     }
 
     private void updatePlayer() {
-        double target = (right ? 4.5 : 0) - (left ? 4.5 : 0);
-        velocityX += (target - velocityX) * (onGround ? 0.24 : 0.15);
-        if (Math.abs(velocityX) < 0.08) velocityX = 0;
-        if (velocityX != 0) facingRight = velocityX > 0;
-        if (jumpQueued && onGround) {
-            velocityY = -15.0;
-            onGround = false;
+        double target = (this.right ? 4.5 : 0) - (this.left ? 4.5 : 0);
+        this.velocityX += (target - this.velocityX) * (this.onGround ? 0.24 : 0.15);
+        if (Math.abs(this.velocityX) < 0.08) this.velocityX = 0;
+        if (this.velocityX != 0) this.facingRight = this.velocityX > 0;
+        if (this.jumpQueued && this.onGround) {
+            this.velocityY = -15.0;
+            this.onGround = false;
         }
-        jumpQueued = false;
-        if (!jumpHeld && velocityY < -5) velocityY += 0.35;
-        velocityY = Math.min(velocityY + 0.68, 15);
+        this.jumpQueued = false;
+        if (!this.jumpHeld && this.velocityY < -5) this.velocityY += 0.35;
+        this.velocityY = Math.min(this.velocityY + 0.68, 15);
 
-        playerX += velocityX;
+        this.playerX += this.velocityX;
         resolveHorizontal();
-        playerX = clamp(playerX, 0, COLS * TILE - PLAYER_W);
-        playerY += velocityY;
-        onGround = false;
+        this.playerX = clamp(this.playerX, 0, COLS * TILE - PLAYER_W);
+        this.playerY += this.velocityY;
+        this.onGround = false;
         resolveVertical();
-        if (playerY > HEIGHT + 100) loseLife();
+        if (this.playerY > HEIGHT + 100) loseLife();
     }
 
     private void resolveHorizontal() {
-        int firstRow = Math.max(0, (int) Math.floor(playerY / TILE));
-        int lastRow = Math.min(ROWS - 1, (int) Math.floor((playerY + PLAYER_H - 1) / TILE));
-        int firstCol = Math.max(0, (int) Math.floor(playerX / TILE));
-        int lastCol = Math.min(COLS - 1, (int) Math.floor((playerX + PLAYER_W - 1) / TILE));
+        int firstRow = Math.max(0, (int) Math.floor(this.playerY / TILE));
+        int lastRow = Math.min(ROWS - 1, (int) Math.floor((this.playerY + PLAYER_H - 1) / TILE));
+        int firstCol = Math.max(0, (int) Math.floor(this.playerX / TILE));
+        int lastCol = Math.min(COLS - 1, (int) Math.floor((this.playerX + PLAYER_W - 1) / TILE));
         for (int row = firstRow; row <= lastRow; row++) {
             for (int col = firstCol; col <= lastCol; col++) {
-                if (tiles[row][col] == EMPTY) continue;
-                if (velocityX > 0 && playerX + PLAYER_W > col * TILE) {
-                    playerX = col * TILE - PLAYER_W;
-                    velocityX = 0;
-                } else if (velocityX < 0 && playerX < (col + 1) * TILE) {
-                    playerX = (col + 1) * TILE;
-                    velocityX = 0;
+                if (this.tiles[row][col] == EMPTY) continue;
+                if (this.velocityX > 0 && this.playerX + PLAYER_W > col * TILE) {
+                    this.playerX = col * TILE - PLAYER_W;
+                    this.velocityX = 0;
+                } else if (this.velocityX < 0 && this.playerX < (col + 1) * TILE) {
+                    this.playerX = (col + 1) * TILE;
+                    this.velocityX = 0;
                 }
             }
         }
     }
 
     private void resolveVertical() {
-        int firstRow = Math.max(0, (int) Math.floor(playerY / TILE));
-        int lastRow = Math.min(ROWS - 1, (int) Math.floor((playerY + PLAYER_H - 1) / TILE));
-        int firstCol = Math.max(0, (int) Math.floor(playerX / TILE));
-        int lastCol = Math.min(COLS - 1, (int) Math.floor((playerX + PLAYER_W - 1) / TILE));
+        int firstRow = Math.max(0, (int) Math.floor(this.playerY / TILE));
+        int lastRow = Math.min(ROWS - 1, (int) Math.floor((this.playerY + PLAYER_H - 1) / TILE));
+        int firstCol = Math.max(0, (int) Math.floor(this.playerX / TILE));
+        int lastCol = Math.min(COLS - 1, (int) Math.floor((this.playerX + PLAYER_W - 1) / TILE));
         for (int row = firstRow; row <= lastRow; row++) {
             for (int col = firstCol; col <= lastCol; col++) {
-                if (tiles[row][col] == EMPTY) continue;
-                if (velocityY > 0) {
-                    playerY = row * TILE - PLAYER_H;
-                    velocityY = 0;
-                    onGround = true;
-                } else if (velocityY < 0) {
-                    playerY = (row + 1) * TILE;
-                    velocityY = 0;
+                if (this.tiles[row][col] == EMPTY) continue;
+                if (this.velocityY > 0) {
+                    this.playerY = row * TILE - PLAYER_H;
+                    this.velocityY = 0;
+                    this.onGround = true;
+                } else if (this.velocityY < 0) {
+                    this.playerY = (row + 1) * TILE;
+                    this.velocityY = 0;
                     hitBlock(row, col);
                 }
             }
@@ -287,47 +287,47 @@ final class GamePanel extends JPanel {
     }
 
     private void hitBlock(int row, int col) {
-        if (tiles[row][col] == QUESTION) {
-            tiles[row][col] = USED;
-            coinCount++;
-            score += 100;
+        if (this.tiles[row][col] == QUESTION) {
+            this.tiles[row][col] = USED;
+            this.coinCount++;
+            this.score += 100;
             burst(col * TILE + TILE / 2.0, row * TILE, new Color(255, 222, 58));
-        } else if (tiles[row][col] == BRICK) {
-            score += 10;
+        } else if (this.tiles[row][col] == BRICK) {
+            this.score += 10;
             burst(col * TILE + TILE / 2.0, row * TILE, new Color(186, 99, 62));
         }
     }
 
     private void updateCoins() {
-        Iterator<Coin> iterator = coins.iterator();
+        Iterator<Coin> iterator = this.coins.iterator();
         while (iterator.hasNext()) {
             Coin coin = iterator.next();
-            if (playerX < coin.x + 12 && playerX + PLAYER_W > coin.x - 12
-                    && playerY < coin.y + 14 && playerY + PLAYER_H > coin.y - 14) {
+            if (this.playerX < coin.x + 12 && this.playerX + PLAYER_W > coin.x - 12
+                    && this.playerY < coin.y + 14 && this.playerY + PLAYER_H > coin.y - 14) {
                 iterator.remove();
-                coinCount++;
-                score += 100;
+                this.coinCount++;
+                this.score += 100;
                 burst(coin.x, coin.y, new Color(255, 226, 68));
             }
         }
     }
 
     private void updateEnemies() {
-        for (Enemy enemy : enemies) {
+        for (Enemy enemy : this.enemies) {
             if (!enemy.alive) continue;
             enemy.x += enemy.speed;
             if (enemy.x < enemy.min || enemy.x > enemy.max) {
                 enemy.speed = -enemy.speed;
                 enemy.x = clamp(enemy.x, enemy.min, enemy.max);
             }
-            if (playerX + PLAYER_W - 5 > enemy.x && playerX + 5 < enemy.x + 32
-                    && playerY + PLAYER_H > enemy.y + 3 && playerY < enemy.y + 30) {
-                if (velocityY > 0 && playerY + PLAYER_H - velocityY <= enemy.y + 14) {
+            if (this.playerX + PLAYER_W - 5 > enemy.x && this.playerX + 5 < enemy.x + 32
+                    && this.playerY + PLAYER_H > enemy.y + 3 && this.playerY < enemy.y + 30) {
+                if (this.velocityY > 0 && this.playerY + PLAYER_H - this.velocityY <= enemy.y + 14) {
                     enemy.alive = false;
-                    velocityY = -9.5;
-                    score += 200;
+                    this.velocityY = -9.5;
+                    this.score += 200;
                     burst(enemy.x + 16, enemy.y + 10, new Color(220, 120, 69));
-                } else if (invincibleTicks == 0) {
+                } else if (this.invincibleTicks == 0) {
                     loseLife();
                     return;
                 }
@@ -336,30 +336,30 @@ final class GamePanel extends JPanel {
     }
 
     private void loseLife() {
-        lives--;
-        if (lives <= 0 || timeLeft <= 0) {
-            state = State.GAME_OVER;
+        this.lives--;
+        if (this.lives <= 0 || this.timeLeft <= 0) {
+            this.state = State.GAME_OVER;
             return;
         }
-        playerX = 2 * TILE;
-        playerY = GROUND_Y - PLAYER_H;
-        velocityX = 0;
-        velocityY = 0;
-        onGround = true;
-        invincibleTicks = 120;
-        cameraX = 0;
+        this.playerX = 2 * TILE;
+        this.playerY = GROUND_Y - PLAYER_H;
+        this.velocityX = 0;
+        this.velocityY = 0;
+        this.onGround = true;
+        this.invincibleTicks = 120;
+        this.cameraX = 0;
     }
 
     private void burst(double x, double y, Color color) {
         for (int i = 0; i < 8; i++) {
             double angle = i * Math.PI / 4;
-            sparks.add(new Spark(x, y, Math.cos(angle) * 3, Math.sin(angle) * 3 - 2, color));
+            this.sparks.add(new Spark(x, y, Math.cos(angle) * 3, Math.sin(angle) * 3 - 2, color));
         }
     }
 
     private void updateSparks() {
-        sparks.removeIf(spark -> --spark.life <= 0);
-        for (Spark spark : sparks) {
+        this.sparks.removeIf(spark -> --spark.life <= 0);
+        for (Spark spark : this.sparks) {
             spark.x += spark.vx;
             spark.y += spark.vy;
             spark.vy += 0.25;
@@ -375,11 +375,11 @@ final class GamePanel extends JPanel {
         Graphics2D g = (Graphics2D) graphics.create();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         drawBackground(g);
-        g.translate(-Math.round(cameraX), 0);
+        g.translate(-Math.round(this.cameraX), 0);
         drawWorld(g);
-        g.translate(Math.round(cameraX), 0);
+        g.translate(Math.round(this.cameraX), 0);
         drawHud(g);
-        if (state != State.PLAYING) drawOverlay(g);
+        if (this.state != State.PLAYING) drawOverlay(g);
         g.dispose();
     }
 
@@ -389,11 +389,11 @@ final class GamePanel extends JPanel {
         g.setColor(new Color(255, 250, 205));
         g.fillOval(720, 80, 84, 84);
         for (int i = -1; i < 8; i++) {
-            int x = (int) (i * 280 - cameraX * 0.22 % 280);
+            int x = (int) (i * 280 - this.cameraX * 0.22 % 280);
             drawCloud(g, x + 35, 100 + (i % 3) * 44);
         }
         for (int i = -1; i < 9; i++) {
-            int x = (int) (i * 230 - cameraX * 0.38 % 230);
+            int x = (int) (i * 230 - this.cameraX * 0.38 % 230);
             g.setColor(new Color(98, 204, 143));
             g.fillOval(x, 355, 240, 230);
             g.setColor(new Color(77, 184, 129));
@@ -414,17 +414,17 @@ final class GamePanel extends JPanel {
     }
 
     private void drawWorld(Graphics2D g) {
-        int first = Math.max(0, (int) cameraX / TILE - 1);
-        int last = Math.min(COLS - 1, (int) (cameraX + WIDTH) / TILE + 1);
+        int first = Math.max(0, (int) this.cameraX / TILE - 1);
+        int last = Math.min(COLS - 1, (int) (this.cameraX + WIDTH) / TILE + 1);
         for (int row = 0; row < ROWS; row++) {
             for (int col = first; col <= last; col++) {
-                if (tiles[row][col] != EMPTY) drawTile(g, row, col);
+                if (this.tiles[row][col] != EMPTY) drawTile(g, row, col);
             }
         }
-        for (Coin coin : coins) {
-            if (coin.x < cameraX - 20 || coin.x > cameraX + WIDTH + 20) continue;
+        for (Coin coin : this.coins) {
+            if (coin.x < this.cameraX - 20 || coin.x > this.cameraX + WIDTH + 20) continue;
             int x = (int) coin.x;
-            int y = (int) coin.y + (int) (Math.sin(ticks * 0.11 + coin.x) * 3);
+            int y = (int) coin.y + (int) (Math.sin(this.ticks * 0.11 + coin.x) * 3);
             g.setColor(new Color(172, 107, 27));
             g.fillOval(x - 11, y - 15, 22, 30);
             g.setColor(new Color(255, 214, 53));
@@ -433,9 +433,9 @@ final class GamePanel extends JPanel {
             g.fillRect(x - 4, y - 9, 4, 13);
         }
         drawFlag(g);
-        for (Enemy enemy : enemies) if (enemy.alive) drawEnemy(g, enemy);
-        if (invincibleTicks == 0 || ticks % 8 < 4) drawPlayer(g);
-        for (Spark spark : sparks) {
+        for (Enemy enemy : this.enemies) if (enemy.alive) drawEnemy(g, enemy);
+        if (this.invincibleTicks == 0 || this.ticks % 8 < 4) drawPlayer(g);
+        for (Spark spark : this.sparks) {
             g.setColor(spark.color);
             g.fillRect((int) spark.x, (int) spark.y, 5, 5);
         }
@@ -444,7 +444,7 @@ final class GamePanel extends JPanel {
     private void drawTile(Graphics2D g, int row, int col) {
         int x = col * TILE;
         int y = row * TILE;
-        int tile = tiles[row][col];
+        int tile = this.tiles[row][col];
         if (tile == GROUND) {
             g.setColor(new Color(163, 89, 50));
             g.fillRect(x, y, TILE, TILE);
@@ -468,9 +468,9 @@ final class GamePanel extends JPanel {
             g.setColor(new Color(22, 98, 55));
             g.fillRect(x + 38, y, 8, TILE);
             if (row == 8 || row == 7) {
-                if (row == 0 || tiles[row - 1][col] != PIPE) {
+                if (row == 0 || this.tiles[row - 1][col] != PIPE) {
                     g.setColor(new Color(28, 110, 62));
-                    g.fillRect(x - (col > 0 && tiles[row][col - 1] == PIPE ? 0 : 4), y, 52, 12);
+                    g.fillRect(x - (col > 0 && this.tiles[row][col - 1] == PIPE ? 0 : 4), y, 52, 12);
                     g.setColor(new Color(82, 222, 105));
                     g.fillRect(x + 4, y + 2, 19, 6);
                 }
@@ -514,8 +514,8 @@ final class GamePanel extends JPanel {
     }
 
     private void drawPlayer(Graphics2D g) {
-        int x = (int) Math.round(playerX);
-        int y = (int) Math.round(playerY);
+        int x = (int) Math.round(this.playerX);
+        int y = (int) Math.round(this.playerY);
         g.setColor(INK);
         g.fillRect(x + 6, y + 7, 22, 34);
         g.setColor(new Color(222, 55, 53));
@@ -526,10 +526,10 @@ final class GamePanel extends JPanel {
         g.fillRect(x + 24, y + 24, 7, 12);
         g.setColor(new Color(246, 187, 135));
         g.fillRect(x + 9, y + 14, 19, 11);
-        g.fillRect(x + (facingRight ? 25 : 4), y + 18, 5, 6);
+        g.fillRect(x + (this.facingRight ? 25 : 4), y + 18, 5, 6);
         g.setColor(INK);
-        g.fillRect(x + (facingRight ? 22 : 12), y + 15, 3, 5);
-        g.fillRect(x + (facingRight ? 17 : 9), y + 21, 9, 3);
+        g.fillRect(x + (this.facingRight ? 22 : 12), y + 15, 3, 5);
+        g.fillRect(x + (this.facingRight ? 17 : 9), y + 21, 9, 3);
         g.setColor(new Color(48, 103, 194));
         g.fillRect(x + 9, y + 29, 16, 9);
         g.fillRect(x + 9, y + 24, 5, 10);
@@ -566,10 +566,10 @@ final class GamePanel extends JPanel {
         g.fillRoundRect(15, 13, WIDTH - 30, 44, 15, 15);
         g.setColor(Color.WHITE);
         g.setFont(HUD_FONT);
-        g.drawString("MARIO  " + String.format("%06d", score), 30, 42);
-        g.drawString("COINS  " + String.format("%02d", coinCount), 295, 42);
-        g.drawString("LIVES  " + lives, 540, 42);
-        g.drawString("TIME  " + String.format("%03d", timeLeft), 740, 42);
+        g.drawString("MARIO  " + String.format("%06d", this.score), 30, 42);
+        g.drawString("COINS  " + String.format("%02d", this.coinCount), 295, 42);
+        g.drawString("LIVES  " + this.lives, 540, 42);
+        g.drawString("TIME  " + String.format("%03d", this.timeLeft), 740, 42);
     }
 
     private void drawOverlay(Graphics2D g) {
@@ -577,27 +577,27 @@ final class GamePanel extends JPanel {
         g.fillRect(0, 0, WIDTH, HEIGHT);
         String title;
         String subtitle;
-        if (state == State.TITLE) {
+        if (this.state == State.TITLE) {
             title = "MINI MARIO";
             subtitle = "收集金币，踩掉敌人，冲向旗帜！";
-        } else if (state == State.PAUSED) {
+        } else if (this.state == State.PAUSED) {
             title = "已暂停";
             subtitle = "按 P 继续游戏";
-        } else if (state == State.WON) {
+        } else if (this.state == State.WON) {
             title = "过关成功！";
-            subtitle = "最终得分  " + score;
+            subtitle = "最终得分  " + this.score;
         } else {
             title = "游戏结束";
-            subtitle = "最终得分  " + score;
+            subtitle = "最终得分  " + this.score;
         }
         g.setFont(TITLE_FONT);
         drawCentered(g, title, 236, new Color(255, 225, 90));
         g.setFont(BODY_FONT);
         drawCentered(g, subtitle, 291, Color.WHITE);
-        String hint = state == State.PAUSED ? "方向键 / A D 移动     空格跳跃"
+        String hint = this.state == State.PAUSED ? "方向键 / A D 移动     空格跳跃"
                 : "按空格开始     方向键 / A D 移动     空格跳跃";
         drawCentered(g, hint, 345, new Color(220, 239, 255));
-        if (state != State.TITLE) drawCentered(g, "R 重新开始", 382, new Color(220, 239, 255));
+        if (this.state != State.TITLE) drawCentered(g, "R 重新开始", 382, new Color(220, 239, 255));
     }
 
     private void drawCentered(Graphics2D g, String value, int y, Color color) {
