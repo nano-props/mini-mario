@@ -1,0 +1,15 @@
+plugins {
+    id 'application'
+}
+
+group = 'mini.mario'
+version = '1.0.0'
+
+application {
+    mainClass = 'mini.mario.MarioGame'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
