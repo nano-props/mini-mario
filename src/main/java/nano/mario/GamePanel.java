@@ -1,4 +1,4 @@
-package mini.mario;
+package nano.mario;
 
 import java.awt.Color;
 import java.awt.Dimension;

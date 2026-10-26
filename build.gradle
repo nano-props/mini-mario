@@ -2,11 +2,11 @@ plugins {
     id 'application'
 }
 
-group = 'mini.mario'
+group = 'nano.mario'
 version = '1.0.0'
 
 application {
-    mainClass = 'mini.mario.MarioGame'
+    mainClass = 'nano.mario.MarioGame'
 }
 
 tasks.withType(JavaCompile).configureEach {
