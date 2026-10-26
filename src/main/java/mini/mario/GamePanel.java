@@ -299,12 +299,12 @@ final class GamePanel extends JPanel {
         var iterator = this.coins.iterator();
         while (iterator.hasNext()) {
             var coin = iterator.next();
-            if (this.playerX < coin.x + 12 && this.playerX + PLAYER_W > coin.x - 12
-                    && this.playerY < coin.y + 14 && this.playerY + PLAYER_H > coin.y - 14) {
+            if (this.playerX < coin.x() + 12 && this.playerX + PLAYER_W > coin.x() - 12
+                    && this.playerY < coin.y() + 14 && this.playerY + PLAYER_H > coin.y() - 14) {
                 iterator.remove();
                 this.coinCount++;
                 this.score += 100;
-                burst(coin.x, coin.y, new Color(255, 226, 68));
+                burst(coin.x(), coin.y(), new Color(255, 226, 68));
             }
         }
     }
@@ -419,9 +419,9 @@ final class GamePanel extends JPanel {
             }
         }
         for (var coin : this.coins) {
-            if (coin.x < this.cameraX - 20 || coin.x > this.cameraX + WIDTH + 20) continue;
-            var x = (int) coin.x;
-            var y = (int) coin.y + (int) (Math.sin(this.ticks * 0.11 + coin.x) * 3);
+            if (coin.x() < this.cameraX - 20 || coin.x() > this.cameraX + WIDTH + 20) continue;
+            var x = (int) coin.x();
+            var y = (int) coin.y() + (int) (Math.sin(this.ticks * 0.11 + coin.x()) * 3);
             g.setColor(new Color(172, 107, 27));
             g.fillOval(x - 11, y - 15, 22, 30);
             g.setColor(new Color(255, 214, 53));
@@ -597,11 +597,7 @@ final class GamePanel extends JPanel {
 
     private record OverlayText(String title, String subtitle) { }
 
-    private static final class Coin {
-        final double x;
-        final double y;
-        Coin(double x, double y) { this.x = x; this.y = y; }
-    }
+    private record Coin(double x, double y) { }
 
     private static final class Enemy {
         double x;
